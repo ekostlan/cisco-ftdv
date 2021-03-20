@@ -1,5 +1,5 @@
 //  Copyright (c) 2020 Cisco Systems Inc or its affiliates.
-//
+// EK change NO to NGO
 //  All Rights Reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -44,7 +44,7 @@ using ftdSshClient;
 //using key = Renci.SshNet.Security.KeyExchange;
 
 namespace FTDAutoScaleManager
-{    
+{
     //****************************************Register FTD with FMC*******************************************************************************
     public static class DeviceRegister
     {
@@ -89,7 +89,7 @@ namespace FTDAutoScaleManager
             log.LogInformation("DeviceRegister:::: Getting Auth Token");
             var getAuth = new fmcAuthClass();
             authToken = getAuth.getFmcAuthToken(log);
-            if("ERROR" == authToken)
+            if ("ERROR" == authToken)
             {
                 log.LogError("DeviceRegister:::: Failed to get Auth token");
                 return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -166,7 +166,7 @@ namespace FTDAutoScaleManager
 
             //  string regRequestContent = "{\r\n  \"name\": \"" + ftdDevName + "\",\r\n \"hostName\": \"" + ftdPublicIp + "\",\r\n \"regKey\": \"" + regKey + "\",\r\n \"natID\": \"" + natId + "\",\r\n \"type\": \"Device\",\r\n \"license_caps\": [\r\n  \"BASE\",\r\n  \"MALWARE\",\r\n  \"URLFilter\",\r\n \"THREAT\"\r\n  ],\r\n \"accessPolicy\": {\r\n \"id\": \"" + policyId + "\",\r\n \"type\": \"AccessPolicy\"\r\n  },\r\n  \"deviceGroup\": {\r\n \"id\": \"" + devGroupId + "\", \r\n  \"type\": \"DeviceGroup\" \r\n } \r\n }";
 
-            string regRequestContent = "{\r\n  \"name\": \"" + ftdDevName + "\",\r\n \"hostName\": \"" + ftdPublicIp + "\",\r\n \"regKey\": \"" + regKey + "\",\r\n \"natID\": \"" + natId + "\",\r\n \"type\": \"Device\",\r\n \"license_caps\": [" + license +   "],\r\n \"accessPolicy\": {\r\n \"id\": \"" + policyId + "\",\r\n \"type\": \"AccessPolicy\"\r\n  },\r\n  \"deviceGroup\": {\r\n \"id\": \"" + devGroupId + "\", \r\n  \"type\": \"DeviceGroup\" \r\n } \r\n }";
+            string regRequestContent = "{\r\n  \"name\": \"" + ftdDevName + "\",\r\n \"hostName\": \"" + ftdPublicIp + "\",\r\n \"regKey\": \"" + regKey + "\",\r\n \"natID\": \"" + natId + "\",\r\n \"type\": \"Device\",\r\n \"license_caps\": [" + license + "],\r\n \"accessPolicy\": {\r\n \"id\": \"" + policyId + "\",\r\n \"type\": \"AccessPolicy\"\r\n  },\r\n  \"deviceGroup\": {\r\n \"id\": \"" + devGroupId + "\", \r\n  \"type\": \"DeviceGroup\" \r\n } \r\n }";
 
             log.LogInformation("DeviceRegister:::: Registration Content : {0}", regRequestContent);
 
@@ -176,7 +176,7 @@ namespace FTDAutoScaleManager
             {
                 log.LogError("DeviceRegister:::: Failed Device Registration");
                 return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
-              //  return (ActionResult)new BadRequestObjectResult("ERROR : Failed Device Registration");
+                //  return (ActionResult)new BadRequestObjectResult("ERROR : Failed Device Registration");
             }
 
             string retVal = "{ \"ftdDevName\" : \"" + ftdDevName + "\" }";
@@ -213,7 +213,7 @@ namespace FTDAutoScaleManager
             log.LogWarning("DeviceDeRegister:::: Received Request to De-Register FTD from FMC");
             log.LogInformation("DeviceDeRegister:::: FTD Public IP : {0}", ftdPublicIp);
             log.LogInformation("DeviceDeRegister:::: FMC IP : {0}", fmcIP);
- 
+
             //------------Get authentication token------------------------------------------
             log.LogInformation("DeviceDeRegister:::: Getting Auth Token");
             var getAuth = new fmcAuthClass();
@@ -235,7 +235,7 @@ namespace FTDAutoScaleManager
             {
                 log.LogError("DeviceDeRegister:::: Failed to get Device ID");
                 return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
-               // return (ActionResult)new BadRequestObjectResult("ERROR: Unable to get Device ID from Device Name");
+                // return (ActionResult)new BadRequestObjectResult("ERROR: Unable to get Device ID from Device Name");
             }
 
             //---------------------------De-Register FTD------------------------------------------
@@ -244,7 +244,7 @@ namespace FTDAutoScaleManager
             var fmcDeRegisterUrl = fmcRegistrationUrl + "/" + devId;
             var deRegClient = new fmcRestApiClass();
             string response = deRegClient.fmcRestApiDelete(fmcDeRegisterUrl, authToken, log);
-            if("ERROR" == response)
+            if ("ERROR" == response)
             {
                 log.LogError("DeviceDeRegister:::: DeRegistration failed");
                 return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -255,7 +255,7 @@ namespace FTDAutoScaleManager
         }
     }
 
-//---------------------------------------Configure FTD device interfaces-----------------------
+    //---------------------------------------Configure FTD device interfaces-----------------------
     public static class ConfigureFtdInterfaces
     {
         [FunctionName("ConfigureFtdInterfaces")]
@@ -299,7 +299,7 @@ namespace FTDAutoScaleManager
 
             //------------Get resource Ids------------------------------------------
             var getId = new getDevIdByNameClass();
-            log.LogInformation("ConfigureFtdInterfaces:::: Getting FTD device ID"); 
+            log.LogInformation("ConfigureFtdInterfaces:::: Getting FTD device ID");
             devId = getId.getDevIdByName(ftdDevName, authToken, log, "FTD", null);
             if ("ERROR" == devId)
             {
@@ -345,7 +345,7 @@ namespace FTDAutoScaleManager
             {
                 log.LogError("ConfigureFtdInterfaces:::: Failed to get outside zone Id");
                 return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
-               // return (ActionResult)new BadRequestObjectResult("ERROR : Failed get  outside zone Id");
+                // return (ActionResult)new BadRequestObjectResult("ERROR : Failed get  outside zone Id");
             }
             log.LogInformation("ConfigureFtdInterfaces:::: Outside zone ID : {0}", outZoneId);
 
@@ -374,12 +374,12 @@ namespace FTDAutoScaleManager
             if ("ERROR" == response2)
             {
                 log.LogError("ConfigureFtdInterfaces:::: Failed to configure outside interface");
-              //  return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
-               // return (ActionResult)new BadRequestObjectResult("ERROR:Failed to configure outside interface");
+                //  return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                // return (ActionResult)new BadRequestObjectResult("ERROR:Failed to configure outside interface");
             }
 
             //Orchestrator will retry if failed
-            if( ("ERROR" == response1) || ("ERROR" == response2) )
+            if (("ERROR" == response1) || ("ERROR" == response2))
             {
                 log.LogError("ConfigureFtdInterfaces:::: Failed to configure inside or outside interface");
                 return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -426,7 +426,7 @@ namespace FTDAutoScaleManager
 
             string authToken = "";
 
-            log.LogWarning("CreateStaticRoutes:::: Creating static routes {0} : {1}", ftdDevName, ftdPrivateIp);
+            log.LogWarning("CreateStaticRoutes:::: EJKBEGIN CLASS Creating static routes {0} : {1}", ftdDevName, ftdPrivateIp);
 
             //-----------------get Auth token------
             log.LogInformation("CreateStaticRoutes:::: Getting Auth Token");
@@ -451,8 +451,14 @@ namespace FTDAutoScaleManager
 
             //Create Network objects
             response = hostObj.fmcNetworkObjectCreate(authToken, any_ipv4_name, "0.0.0.0/0", log, "network object for any ip");
-            response = hostObj.fmcNetworkObjectCreate(authToken, network_name, cidr, log, "network object for local net cidr");
+            // Add this statement if you want to use a network object instead of a network group for inside routing:
+            // response = hostObj.fmcNetworkObjectCreate(authToken, network_name, cidr, log, "network object for local net cidr");
 
+            //Create Network Group objects
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // !! This statement does not work as written and is only included as a placeholder !!
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            // response = hostObj.fmcNetworkGroupObjectCreate(authToken, "aaax2xaaagG", "[aaax2xaaaHost]", log, "test network object group");
 
             log.LogInformation("CreateStaticRoutes:::: --------Creating Static routes-------------");
             var getId = new getDevIdByNameClass();
@@ -460,7 +466,9 @@ namespace FTDAutoScaleManager
             string inGwObjId = getId.getObjIdByName(inside_gw, authToken, log, "HOST");
             string outGwObjId = getId.getObjIdByName(outside_gw, authToken, log, "HOST");
             string azureObjId = getId.getObjIdByName(azure_utility_ip_name, authToken, log, "HOST");
-            string vnetObjId = getId.getObjIdByName(network_name, authToken, log, "NETWORK");
+            // Substitute this statement if you want to use a network object instead of a network group for inside routing:
+            // string vnetObjId = getId.getObjIdByName(network_name, authToken, log, "NETWORK");
+            string vnetObjId = getId.getObjIdByName(network_name, authToken, log, "NETWORKGROUP");
             string anyipObjName = getId.getObjIdByName(any_ipv4_name, authToken, log, "NETWORK");
 
             int routeCreationError = 0;
@@ -483,13 +491,21 @@ namespace FTDAutoScaleManager
                 //return (ActionResult)new BadRequestObjectResult("ERROR: Failed to get Auth Token");
             }
 
-            if ( "ERROR" == hostObj.fmcCreateHostRoutes(authToken, log, devId, fmcInsideNicName, network_name, vnetObjId, inside_gw, inGwObjId, "1"))
+            if ("ERROR" == hostObj.fmcCreateHostRoutes(authToken, log, devId, fmcInsideNicName, network_name, vnetObjId, inside_gw, inGwObjId, "1"))
             {
                 log.LogError("CreateStaticRoutes:::: Failed to create route-1");
                 routeCreationError = 1;
-               // return (ActionResult)new BadRequestObjectResult("ERROR: Failed to Create route-1");
-               // return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                // return (ActionResult)new BadRequestObjectResult("ERROR: Failed to Create route-1");
+                // return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
+            // Substetutethese statements if you want to use a network object instead of a network group for inside routing:
+            // if ( "ERROR" == hostObj.fmcCreateHostRoutes(authToken, log, devId, fmcInsideNicName, network_name, vnetObjId, inside_gw, inGwObjId, "1"))
+            // {
+            //     log.LogError("CreateStaticRoutes:::: Failed to create route-1");
+            //     routeCreationError = 1;
+            //    // return (ActionResult)new BadRequestObjectResult("ERROR: Failed to Create route-1");
+            //    // return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            // }
             if ("ERROR" == hostObj.fmcCreateHostRoutes(authToken, log, devId, fmcOutsideNicName, any_ipv4_name, anyipObjName, outside_gw, outGwObjId, "2"))
             {
                 log.LogError("CreateStaticRoutes:::: Failed to create route-2");
@@ -505,7 +521,7 @@ namespace FTDAutoScaleManager
                 //return (ActionResult)new BadRequestObjectResult("ERROR: Failed to Create route-5");
             }
 
-            if(1 == routeCreationError)
+            if (1 == routeCreationError)
             {
                 //For Orchestrator to re-try
                 return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
@@ -839,7 +855,7 @@ namespace FTDAutoScaleManager
     }
 #endif
     //---------------------------------------Deploy Configuration--------------------
-        public static class DeployConfiguration
+    public static class DeployConfiguration
     {
         [FunctionName("DeployConfiguration")]
         public static async Task<IActionResult> Run(
@@ -854,7 +870,7 @@ namespace FTDAutoScaleManager
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             ftdDevName = ftdDevName ?? data?.ftdDevName;
- 
+
             //-----------------get Auth token------
             log.LogInformation("DeployConfiguration:::: Getting Auth Token");
             var getAuth = new fmcAuthClass();
@@ -863,7 +879,7 @@ namespace FTDAutoScaleManager
             {
                 log.LogError("DeployConfiguration:::: Failed to get Auth token");
                 return (ActionResult)new StatusCodeResult(StatusCodes.Status500InternalServerError);
-               // return (ActionResult)new BadRequestObjectResult("ERROR: Failed to get Auth Token");
+                // return (ActionResult)new BadRequestObjectResult("ERROR: Failed to get Auth Token");
             }
 
             log.LogWarning("DeployConfiguration:::: Deployment Started");
@@ -933,7 +949,7 @@ namespace FTDAutoScaleManager
             string azureObjId = getId.getObjIdByName(azure_utility_ip_name, authToken, log, "HOST");
             string outGwObjId = getId.getObjIdByName(outside_gw, authToken, log, "HOST");
 
-            if (("ERROR" == outGwObjId) || ("ERROR" == azureObjId) )
+            if (("ERROR" == outGwObjId) || ("ERROR" == azureObjId))
             {
                 log.LogError("CreateStaticRoutes:::: Failed to get Device ID");
                 log.LogError("CreateStaticRoutes:::: outGwObjId={0}, azureObjId={1} ", outGwObjId, azureObjId);
@@ -1163,9 +1179,9 @@ namespace FTDAutoScaleManager
 
             var sshObj = new ftdSshClientClass();
             string ret = sshObj.ftdSsh(ftdPublicIp, "pending", log);
-            if("AVAILABLE" == ret)
+            if ("AVAILABLE" == ret)
             {
-                if("YES" == setUniqueHostName)
+                if ("YES" == setUniqueHostName)
                 {
                     log.LogInformation("Setting host name to {0}", ftdDevName);
                     sshObj.ftdSshSetHostName(ftdPublicIp, ftdDevName, log);
@@ -1332,7 +1348,7 @@ namespace FTDAutoScaleManager
             {
                 log.LogError("MinimumConfigVerification:::: Unable to get Device Group ID");
                 return (ActionResult)new BadRequestObjectResult("ERROR : Failed get Device Group Id");
-                
+
             }
             log.LogInformation("MinimumConfigVerification:::: Device Group ID : {0}", devGroupId);
 #if false //This is creating timing issues
@@ -1403,7 +1419,7 @@ namespace FTDAutoScaleManager
                 log.LogWarning("DeleteUnRegisteredFTD:::: Feature to delete unregistered FTD is not enabled");
                 return (ActionResult)new OkObjectResult("SUCCESS");
             }
-                       
+
             //-----------------get Auth token------
             log.LogInformation("DeleteUnRegisteredFTD:::: Getting Auth Token");
             var getAuth = new fmcAuthClass();
@@ -1447,8 +1463,8 @@ namespace FTDAutoScaleManager
             {
                 log.LogWarning("DeleteUnRegisteredFTD:::: FTD {0} is registered to FMC", ftdDevName);
             }
-        
-        return (ActionResult)new OkObjectResult("SUCCESS");
+
+            return (ActionResult)new OkObjectResult("SUCCESS");
         }
     }
 }

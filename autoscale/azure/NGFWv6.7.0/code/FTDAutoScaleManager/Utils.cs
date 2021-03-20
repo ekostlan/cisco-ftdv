@@ -1,5 +1,5 @@
-﻿//  Copyright (c) 2020 Cisco Systems Inc or its affiliates.
-//
+//  Copyright (c) 2020 Cisco Systems Inc or its affiliates.
+//  EK Modified NO to NGO
 //  All Rights Reserved.
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
@@ -40,7 +40,7 @@ namespace fmcAuth
             string authToken = "";
             string authResponse = "";
 
-            log.LogInformation("util:::: FMC IP : {0}", fmcIP);            
+            log.LogInformation("util:::: FMC IP : {0}", fmcIP);
 
 
             //------------Get authentication token------------------------------------------
@@ -95,7 +95,7 @@ namespace getDevIdByName
             else if ("NIC" == cmd)
             {
                 log.LogInformation("util:::: Getting NIC ({0}) Device ID", devName);
-                regUrl = regUrl + "/" +optional_dev_Id + "/physicalinterfaces";
+                regUrl = regUrl + "/" + optional_dev_Id + "/physicalinterfaces";
                 log.LogWarning("util:::: URL : {0}", regUrl);
 
             }
@@ -196,7 +196,7 @@ namespace getDevIdByName
             log.LogDebug("util:::: response : {0}", response.Content);
 
             //convert string to json object
-           return response.Content;
+            return response.Content;
 
         }
 
@@ -227,6 +227,12 @@ namespace getDevIdByName
                 log.LogInformation("util:::: Getting Network obj ({0})  ID", objName);
                 regUrl = regUrl + "networkaddresses";
                 type = "Network";
+            }
+            else if ("NETWORKGROUP" == cmd)
+            {
+                log.LogInformation("util:::: Getting Network Group obj ({0})  ID", objName);
+                regUrl = regUrl + "networkgroups";
+                type = "NetworkGroup";
             }
             else
             {
@@ -366,9 +372,9 @@ namespace fmcRestApi
             var response = restClient.Execute(request);
             //log.LogInformation("util:::: token {0} ", authToken);
             log.LogInformation("util:::: Post RESET API Status code : {0}", response.StatusCode);
-           // log.LogInformation("util:::: RESET API Status code : {0} {1}", response.ResponseStatus,  response.Content);
+            // log.LogInformation("util:::: RESET API Status code : {0} {1}", response.ResponseStatus,  response.Content);
 
-            if ( ("OK" != response.StatusCode.ToString()) && ("Created" != response.StatusCode.ToString()) && ("Accepted" != response.StatusCode.ToString()))
+            if (("OK" != response.StatusCode.ToString()) && ("Created" != response.StatusCode.ToString()) && ("Accepted" != response.StatusCode.ToString()))
             {
                 log.LogError("util:::: REST API POST Failed : {0}, {1}, {2}, {3}", response.StatusCode, response.StatusDescription, response.StatusDescription, response.Content);
                 return "ERROR";
@@ -447,6 +453,30 @@ namespace fmcObject
             return "SUCCESS";
         }
 
+        //****************************Create Network Group Objects ********************************************************************
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // !! This routine does not work as written and is only included as a placeholder !!
+        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        public string fmcNetworkGroupObjectCreate(string authToken, string objName, string netobjs, ILogger log, string description)
+        {
+            string fmcIP = System.Environment.GetEnvironmentVariable("FMC_IP", EnvironmentVariableTarget.Process);
+            string fmcUUID = System.Environment.GetEnvironmentVariable("FMC_DOMAIN_UUID", EnvironmentVariableTarget.Process);
+
+            string uri = "https://" + fmcIP + "/api/fmc_config/v1/domain/" + fmcUUID + "/object/networkgroups";
+            string body = "{ \"name\": \"" + objName + "\", \"value\": \"" + netobjs + "\", \"overridable\": \"False\", \"description\": \"" + description + "\" }";
+
+            log.LogInformation("util:::: Creating Network Group object : {0}", objName);
+            log.LogDebug("util:::: uri : {0}, body : {1}", uri, body);
+            var restPost = new fmcRestApiClass();
+            string response = restPost.fmcRestApiPost(uri, authToken, log, body);
+            if ("ERROR" == response)
+            {
+                log.LogError("util:::: Failed to create Network Group Object : {0}..probably already existing", objName);
+                return "ERROR";
+            }
+            return "SUCCESS";
+        }
+
         //****************************Create PORT Objects ********************************************************************
         public string fmcPortObjectCreate(string authToken, string objName, string port, string protocol, ILogger log, string description)
         {
@@ -469,7 +499,7 @@ namespace fmcObject
         }
 
         //****************************Create HOST Static Routes  ********************************************************************
-        public string fmcCreateHostRoutes(string authToken, ILogger log, string ngfwid, string interfaceName, string hostObjectNameTarget,  string hostObjectIdTarget, string hostObjectNameGw, string hostObjectIdGw, string metric)
+        public string fmcCreateHostRoutes(string authToken, ILogger log, string ngfwid, string interfaceName, string hostObjectNameTarget, string hostObjectIdTarget, string hostObjectNameGw, string hostObjectIdGw, string metric)
         {
             string fmcIP = System.Environment.GetEnvironmentVariable("FMC_IP", EnvironmentVariableTarget.Process);
             string fmcUUID = System.Environment.GetEnvironmentVariable("FMC_DOMAIN_UUID", EnvironmentVariableTarget.Process);
@@ -520,10 +550,10 @@ namespace fmcObject
             string uri = "https://" + fmcIP + "/api/fmc_config/v1/domain/" + fmcUUID + "/assignment/policyassignments";
             string body = "{ \"type\": \"PolicyAssignment\", \"policy\": { \"type\": \"FTDNatPolicy\",  \"id\": \"" + policyId + "\" }, \"targets\": [ {  \"id\": \"" + deviceId + "\", \"type\": \"Device\"  }  ]   }";
             log.LogInformation("util:::: Associating NAT policy {0} with Device {1} ", policyName, deviceName);
-           // log.LogInformation("util:::: uri : {0},  body : {1}", uri, body);
+            // log.LogInformation("util:::: uri : {0},  body : {1}", uri, body);
             var restPost = new fmcRestApiClass();
             string response = restPost.fmcRestApiPost(uri, authToken, log, body);
-            
+
             if ("ERROR" == response)
             {
                 log.LogError("util:::: Failed to Associate NAT policy {0}", policyName);
@@ -556,7 +586,7 @@ namespace fmcObject
 
         //****************************Create Auto NAT Rule ********************************************************************
         public string fmcCreateAutoNatRules(string authToken, ILogger log, string natPolicyId, string natType, string sourceZoneId, string destZoneId, string originalNetworkObjectId)
-        { 
+        {
             string fmcIP = System.Environment.GetEnvironmentVariable("FMC_IP", EnvironmentVariableTarget.Process);
             string fmcUUID = System.Environment.GetEnvironmentVariable("FMC_DOMAIN_UUID", EnvironmentVariableTarget.Process);
 
@@ -600,7 +630,7 @@ namespace fmcObject
                 log.LogError("util:::: Failed get NAT rules details from NAT policy");
                 return "ERROR";
             }
-            
+
 
             try
             {
@@ -661,7 +691,7 @@ namespace fmcObject
             string fmcIP = System.Environment.GetEnvironmentVariable("FMC_IP", EnvironmentVariableTarget.Process);
             string fmcUUID = System.Environment.GetEnvironmentVariable("FMC_DOMAIN_UUID", EnvironmentVariableTarget.Process);
 
-            string uri = "https://" + fmcIP + "/api/fmc_config/v1/domain/" + fmcUUID + "/object/hosts/" +  objId;
+            string uri = "https://" + fmcIP + "/api/fmc_config/v1/domain/" + fmcUUID + "/object/hosts/" + objId;
 
             log.LogInformation("util:::: Deleting Host Object..");
 
@@ -745,7 +775,7 @@ namespace ftdSshClient
             }
         }
 
-        public string ftdSshSetHostName(string ftdIp, string hostname,  ILogger log)
+        public string ftdSshSetHostName(string ftdIp, string hostname, ILogger log)
         {
             string ftdUserName = System.Environment.GetEnvironmentVariable("FTD_USERNAME", EnvironmentVariableTarget.Process);
             string ftdPassword = System.Environment.GetEnvironmentVariable("FTD_PASSWORD", EnvironmentVariableTarget.Process);
@@ -772,7 +802,7 @@ namespace ftdSshClient
             catch
             {
                 log.LogError("util:::: SSH exception");
-                
+
             }
             return "SUCCESS";
         }
@@ -809,7 +839,7 @@ namespace getFtdMetricsFromFmc
                 return errCode;
             }
 
-          //  log.LogInformation("util:::: Successfully got Response for Metrics");
+            //  log.LogInformation("util:::: Successfully got Response for Metrics");
             log.LogDebug("util:::: response : {0}", response.Content);
 
             try
@@ -821,8 +851,8 @@ namespace getFtdMetricsFromFmc
 
                     if (("metric" == item["type"].ToString()) && ("memory" == item["id"].ToString()))
                     {
-                       return item["healthMonitorMetric"]["value"].ToString();
-                     }
+                        return item["healthMonitorMetric"]["value"].ToString();
+                    }
                 }
             }
             catch
